@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entities\Question;
 use Illuminate\Http\Request;
+use App\Http\Requests\AskQuestionRequest;
 
 class QuestionsController extends Controller
 {
@@ -14,7 +15,7 @@ class QuestionsController extends Controller
      */
     public function index()
     {
-        $questions = Question::latest()->paginate(5);
+        $questions = Question::with('user')->latest()->paginate(10);
 
         return view('questions.index', compact('questions'));
     }
@@ -26,7 +27,9 @@ class QuestionsController extends Controller
      */
     public function create()
     {
-        //
+        $question = new Question();
+
+        return view('questions.create', compact('question'));
     }
 
     /**
@@ -35,9 +38,12 @@ class QuestionsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AskQuestionRequest $request)
     {
-        //
+        $request->user()->questions()->create($request->only('title', 'body'));
+
+        return redirect()->route('questions.index')
+                        ->with('success', "You question has been submitted");
     }
 
     /**
