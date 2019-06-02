@@ -16,8 +16,10 @@ class DatabaseSeeder extends Seeder
            $u->questions()
              ->saveMany(
                  factory(\App\Entities\Question::class, 10)->make()
-             );
+             )->each(function ($q){
+                 $q->answers()->saveMany(
+                     factory(\App\Entities\Answer::class, 5)->make());
+               });
         });
-
     }
 }
