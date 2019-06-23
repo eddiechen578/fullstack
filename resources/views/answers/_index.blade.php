@@ -1,3 +1,5 @@
+@if($answersCount > 0 )
+
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="card">
@@ -10,16 +12,26 @@
                 @foreach($answers as $answer)
                     <div class="media">
                         <div class="d-flex flex-column vote-controls">
-                            <a  title="The answers is useful" class="vote-up">
+                            <a  title="The answer is useful" class="vote-up {{Auth::guest()? 'off': ''}}"
+                                onclick="event.preventDefault(); document.getElementById('up-vote-answer-{{$answer->id}}').submit()"
+                            >
                                 <i class="fa fa-caret-up fa-3x"></i>
                             </a>
-                            <span class="vote-count">123</span>
-                            <a title="The answers is not useful" class="vote-down off">
+                            <form id="up-vote-answer-{{$answer->id}}" action="/answers/{{$answer->id}}/vote" method="post" style="display: none">
+                                @csrf
+                                <input type="hidden" name="vote" value="1">
+                            </form>
+                            <span class="vote-count">{{$answer->votes_count}}</span>
+                            <a title="The question is not useful" class="vote-down {{Auth::guest()? 'off': ''}}"
+                               onclick="event.preventDefault(); document.getElementById('down-vote-answer-{{$answer->id}}').submit()"
+                            >
                                 <i class="fa fa-caret-down fa-3x"></i>
                             </a>
-                            <a title="Mark this answer as best answer" class="vote-accepted mr-2 ">
-                                <i class="fa fa-check fa-2x"></i>
-                            </a>
+                            <form id="down-vote-answer-{{$answer->id}}" action="/answers/{{$answer->id}}/vote" method="post" style="display: none">
+                                @csrf
+                                <input type="hidden" name="vote" value="-1">
+                            </form>
+
                         </div>
                         <div class="media-body">
                             {!! $answer->body_html !!}
@@ -44,18 +56,11 @@
                                 </div>
                                 <div class="col-4"></div>
                                 <div class="col-4">
-                                    <span class="text-muted">Answered {{$answer->created_date}}</span>
-                                        <div class="media mt-3">
-                                            <a href="{{$answer->user->url}}" class="pr-2">
-                                                <img src="{{$answer->user->avatar}}" alt="" width="30" height="30">
-                                            </a>
-                                            <div class="media-body mt-2">
-                                                <a href="{{$answer->user->url}}">
-                                                    {{$answer->user->name}}"
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   @include('shared._author', [
+                                        'model' => $answer,
+                                        'label'  => 'answered'
+                                   ])
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,3 +70,5 @@
         </div>
     </div>
 </div>
+
+@endif

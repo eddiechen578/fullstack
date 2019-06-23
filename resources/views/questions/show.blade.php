@@ -18,36 +18,23 @@
                     </div>
                         <hr>
                       <div class="media">
-                      <div class="d-flex flex-column vote-controls">
-                          <a  title="The question is useful" class="vote-up">
-                              <i class="fa fa-caret-up fa-3x"></i>
-                          </a>
-                          <span class="vote-count">123</span>
-                          <a title="The question is not useful" class="vote-down off">
-                              <i class="fa fa-caret-down fa-3x"></i>
-                          </a>
-                          <a title="Click to mark as favorite question (Click again to undo)" class="favorite mr-2 favorited">
-                              <i class="fa fa-star fa-2x"></i>
-                          </a>
-                          <span class="favorites-count">123</span>
-                      </div>
+                        @include('shared._vote', [
+                            'model' => $question
+                        ])
 
                         <div class="media-body">
-                          {!! $question->body_html!!}
-                              <div class="float-right">
-                                    <span class="text-muted">Answered {{$question->created_date}}</span>
-                                    <div class="media mt-3">
-                                        <a href="{{$question->user->url}}" class="pr-2">
-                                            <img src="{{$question->user->avatar}}" alt="" width="30" height="30">
-                                        </a>
-                                        <div class="media-body mt-2">
-                                            <a href="{{$question->user->url}}">
-                                                {{$question->user->name}}"
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                          {{ $question->excerpt(350)}}
+                             <div class="row">
+                                 <div class="col-4"></div>
+                                 <div class="col-4"></div>
+                                 <div class="col-4">
+                                     @include('shared._author', [
+                                        'model' => $question,
+                                        'label' => 'asked'
+                                     ])
+                                 </div>
+                             </div>
+                        </div>
                        </div>
                    </div>
                 </div>

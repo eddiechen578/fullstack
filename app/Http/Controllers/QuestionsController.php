@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Entities\Question;
+use function foo\func;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use App\Http\Requests\AskQuestionRequest;
-
+use Illuminate\Support\Facades\DB;
 class QuestionsController extends Controller
 {
     public function __construct()
@@ -18,11 +19,34 @@ class QuestionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::with('user')->latest()->paginate(10);
+        $builder = Question::with('user');
 
-        return view('questions.index', compact('questions'));
+        if($search = $request->input('search')){
+            $like = "%$search%";
+            $builder->where(function ($query) use ($like){
+                        $query->where('title', 'like', $like)
+                              ->orWhere('body', 'like', $like);
+                        })
+                        ->get();
+        }
+
+        if($orderBy = $request->input('orderby')){
+            if(preg_match('/^(.+)_(asc|desc)$/', $orderBy, $m)){
+                if(in_array($m[1], ['created'])){
+                    $builder->orderBy('created_at', $m[2]);
+                }
+            }
+        }
+
+        $questions = $builder->paginate(10);
+
+        return view('questions.index', compact('questions'))
+               ->with('filters', [
+                   'search'  => $search,
+                   'orderby' => $orderBy
+               ]);
     }
 
     /**

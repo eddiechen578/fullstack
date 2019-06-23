@@ -3,10 +3,13 @@
 namespace App\Entities;
 
 use App\User;
+use App\VotableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
 {
+    use VotableTrait;
+
     protected $guarded = [];
 
     public function question(){
@@ -18,7 +21,7 @@ class Answer extends Model
     }
 
     public function getBodyHtmlAttribute(){
-        return \Parsedown::instance()->text($this->body);
+        return clean(\Parsedown::instance()->text($this->body));
     }
 
     public static function boot()
@@ -28,9 +31,32 @@ class Answer extends Model
         static::created(function ($answer){
             $answer->question->increment('answers_count');
         });
+
+        static::deleted(function ($answer){
+
+            $answer->question->decrement('answers_count');
+
+//            if($question->best_answer_id === $answer->id){
+//                $question->best_answer_id = null;
+//                $question->save();
+//            }
+        });
     }
 
     public function getCreatedDateAttribute(){
         return $this->created_at->diffForHumans();
     }
+
+    public function getStatusAttribute(){
+        return $this->isBest()? 'vote-accepted': '';
+    }
+
+    public function getIsBestAttribute(){
+        return $this->isBest();
+    }
+
+    public function isBest(){
+        return $this->id === $this->question->best_answer_id;
+    }
+
 }
