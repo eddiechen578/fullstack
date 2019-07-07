@@ -35,13 +35,10 @@
         <input type="hidden" name="vote" value="-1">
     </form>
     @if($model instanceof App\Entities\Question)
-        @include('shared._favorite', [
-            'model' => $model
-        ])
+       <favorite :question="{{$model}}"></favorite>
     @elseif($model instanceof App\Entities\Answer)
         @include('shared._accept', [
            'model' => $model
        ])
     @endif
-    <span class="favorites-count">{{$model->favorites_count}}</span>
 </div>

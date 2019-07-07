@@ -2,6 +2,7 @@
    onclick="event.preventDefault(); document.getElementById('favorite-question-{{$model->id}}').submit()"
 >
     <i class="fa fa-star fa-2x"></i>
+    <span class="favorites-count">{{$model->favorites_count}}</span>
 </a>
 <form id="favorite-question-{{$model->id}}" action="/{{$firstURLSegment}}/{{$model->id}}/favorites" method="post" style="display: none">
     @csrf

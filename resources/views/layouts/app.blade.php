@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
@@ -76,6 +73,24 @@
             @yield('content')
         </main>
     </div>
+    <script>
+        window.Auth = {!! json_encode([
+            'signedIn' => Auth::check(),
+            'user'  => Auth::user()
+        ])  !!}
+    </script>
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
     @stack('script')
 </body>
 </html>
+
+@push('script')
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+
+    <script>
+        $(document).append(form);
+    </script>
+@endpush
+
