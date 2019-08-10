@@ -12,7 +12,7 @@ class Question extends Model
 
     protected $fillable = ['title', 'body'];
 
-    protected $appends = ['created_date', 'is_favorited', 'favorites_count'];
+    protected $appends = ['created_date', 'is_favorited', 'favorites_count', 'body_html'];
 
     public function user(){
         return $this->belongsTo(User::class);
@@ -37,6 +37,10 @@ class Question extends Model
 
     public function getCreatedDateAttribute(){
         return $this->created_at->diffForHumans();
+    }
+
+    public function getBodyHtmlAttribute(){
+        return \Parsedown::instance()->text($this->body);
     }
 
     public function getStatusAttribute(){

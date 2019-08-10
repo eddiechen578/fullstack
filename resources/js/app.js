@@ -12,7 +12,13 @@ import VueIziToast from 'vue-izitoast';
 
 import 'izitoast/dist/css/iziToast.css';
 
+import Authorization from './authorization/authorize';
+
 Vue.use(VueIziToast);
+Vue.use(Authorization);
+
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -25,8 +31,9 @@ Vue.use(VueIziToast);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('user-info', require('./components/UserInfo.vue').default);
-Vue.component('answer', require('./components/Answer.vue').default);
-Vue.component('favorite', require('./components/Favorite.vue').default);
+Vue.component('vote', require('./components/Vote.vue').default);
+Vue.component('answers', require('./components/Answers.vue').default);
+Vue.component('question', require('./components/Question.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
